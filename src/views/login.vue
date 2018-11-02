@@ -36,19 +36,20 @@ export default {
   },
 
   methods: {
-    handleLoginin () {
-      this.$http.post('login', this.formdata)
-        .then((res) => {
-          // console.log(res)
+    async handleLoginin () {
+      const res = await this.$http.post('login', this.formdata)
+      const {meta} = res.data
+      if (meta.status === 200) {
+        const token = res.data.data.token
 
-          const {meta} = res.data
+        sessionStorage.setItem('token', token)
 
-          if (meta.status === 200) {
-            this.$message.success(meta.msg);
-          } else {
-            this.$message.error(meta.msg);
-          }
-        })
+        this.$router.push('/')
+
+        this.$message.success(meta.msg)
+      } else {
+        this.$message.error(meta.msg)
+      }
     }
   }
 }
